@@ -1,0 +1,258 @@
+<!doctype html>
+<html>
+   <head>
+      <title>Dashboard</title>
+      <link href="{{url_for('static', filename = 'css/bootstrap.min.css')}}" rel="stylesheet">
+      <style>
+         header {
+               background-color: #3F72AF;
+               color: white;
+               display: flex;
+               justify-content: space-between;
+               align-items: center;
+               padding: 10px 20px;
+               box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+           }
+   
+           .header-left {
+               display: flex;
+               align-items: center;
+           }
+   
+           .header-left > div {
+               margin-right: 30px; /* Adjust spacing between username and level */
+           }
+   
+           .btn {
+               display: inline-block;
+               text-decoration: none;
+               padding: 8px 15px;
+               border-radius: 5px;
+               transition: background-color 0.3s;
+               text-align: center;
+           }
+   
+           .btn-home {
+               background-color: #28a745; /* Green */
+               color: white;
+           }
+   
+           .btn-logout {
+               background-color: #dc3545; /* Red */
+               color: white;
+           }
+   
+           .btn-home:hover {
+               background-color: #218838; /* Darker Green */
+           }
+   
+           .btn-logout:hover {
+               background-color: #c82333; /* Darker Red */
+           }
+           .well{
+         background-color: #7f7247;
+         color: #FFF;
+        }
+        table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px; /* Adjust as needed */
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #3F72AF; /* Adds a line to separate rows */
+    }
+
+    th {
+        background-color: #39849f; /* Color for the header row */
+        color: white;
+    }
+
+    tr:hover {background-color: #a13535;} /* Highlights row on mouse-over */
+
+    /* Zebra striping for rows */
+    tr:nth-child(even) {background-color: #eaece3;}
+    .btn-xs {
+    padding: 5px 10px; /* Smaller padding */
+    font-size: 12px; /* Smaller font size */
+    line-height: 1.5; /* Adjust line height to ensure text is centered */
+  }
+         </style>
+   </head>
+   <body>
+      <header>
+         <!-- Placeholder for the header content -->
+         <div class="header-left">
+             <div>Username: {{ username }}</div>
+             <div>&nbsp; &nbsp;&nbsp;&nbsp;Level: {{ userlevel }}</div>
+         </div>
+         <div class="header-right">
+             <a href="{{ url_for('control_panel') }}" class="btn btn-home">Home</a>&nbsp;&nbsp;&nbsp;
+             <a href="{{ url_for('session_termination') }}" class="btn btn-logout">Logout</a>
+         </div>
+     </header>
+      <div class="container">
+         <div class="well text-center">
+            <h1>Employee Management</h1>
+         </div>
+      </div>
+      <div class="container">
+         <div class="row">
+            <div class="col md-12">
+                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">+ New Employee</button></h3>
+                  <a href="{{ url_for('export_employees_to_xml') }}" class="btn btn-success">→ Export to XML</a>
+                  <a href="{{ url_for('export_employees_to_ascii') }}" class="btn btn-success">→ Export to ASCII</a>
+               {%with alerts = get_flashed_messages()%}
+               {%if alerts%}
+               {% for alert in alerts %}
+               <div class="alert alert-success alert-dismissable" role="alert">
+                  {{alert}}
+               </div>
+               {%endfor%}
+               {%endif%}
+               {%endwith%}
+               <table class="table table-striped">
+                  <tr>
+                      <th scope="col">Employee ID</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Username</th>
+                      <!-- <th scope="col">Password</th> -->
+                      <th scope="col">User Level</th>
+                      <th scope="col">Login Access</th>
+                      <th scope="col">Operations</th>
+                  </tr>
+                  {% for row in employees %}
+                  <tr>
+                      <td>{{ row['emp_id'] }}</td>
+                      <td>{{ row['name'] }}</td>
+                      <td>{{ row['username'] }}</td>
+                      <!-- <td>{{ row['password'] }}</td> -->
+                      <td>{{ row['userlevel'] }}</td>
+                      <td>
+                        {% if row['userlevel'] == 3 %}
+    {% if row['is_approved'] == 0 %}
+        <!-- Show approve button only if the admin is not approved yet -->
+        <form action="{{ url_for('toggle_approval') }}" method="post">
+            <input type="hidden" name="emp_id" value="{{ row['emp_id'] }}">
+            <input type="hidden" name="new_status" value="1">
+            <button type="submit" class="btn btn-success btn-xs">Approve</button>
+        </form>
+    {% else %}
+        <!-- No buttons for already approved admins -->
+    {% endif %}
+{% else %}
+    {% if row['is_approved'] == 0 %}
+        <!-- Regular users who are not approved yet can be approved -->
+        <form action="{{ url_for('toggle_approval') }}" method="post">
+            <input type="hidden" name="emp_id" value="{{ row['emp_id'] }}">
+            <input type="hidden" name="new_status" value="1">
+            <button type="submit" class="btn btn-success btn-xs">Approve</button>
+        </form>
+    {% else %}
+        <!-- Regular users who are already approved can be revoked -->
+        <form action="{{ url_for('toggle_approval') }}" method="post">
+            <input type="hidden" name="emp_id" value="{{ row['emp_id'] }}">
+            <input type="hidden" name="new_status" value="0">
+            <button type="submit" class="btn btn-warning btn-xs">Revoke</button>
+        </form>
+    {% endif %}
+{% endif %}
+
+                      </td>
+                      <td>
+                        {% if row['username'] != 'admin' %}
+                        <a href="/update/{{row['emp_id']}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{row['emp_id']}}">Modify</a>
+                          <a href="/delete_employee/{{ row['emp_id'] }}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure For Delete?')">Remove</a>
+                          {% endif %}
+                        </td>
+                  </tr>
+                  <div id="modaledit{{row['emp_id']}}" class="modal fade" role="dialog">
+                     <div class="modal-dialog">
+                        <div class="modal-content">
+                           <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              <h4 class="modal-title">Update Employee</h4>
+                           </div>
+                           <div class="modal-body">
+                              <form action="{{ url_for('edit_employee') }}" method="POST">
+                                 <div class="form-group">
+                                    <label>Name*:</label>
+                                    <input type="hidden"  name="emp_id" value="{{row['emp_id']}}">
+                                    <input type="text" class="form-control" name="name" value="{{row['name']}}">
+                                 </div>
+                                 <div class="form-group">
+                                    <label>Username*:</label>
+                                    <input type="text" class="form-control" name="username" value="{{row['username']}}" required> 
+                                 </div>
+                                 <!-- <div class="form-group">
+                                    <label>Password*:</label>
+                                    <input type="text" class="form-control" name="password" value="{{row['password']}}" required> 
+                                 </div> -->
+                                 <div class="form-group">
+                                    <label>Userlevel*:</label>
+                                    <input type="text" class="form-control" name="userlevel" value="{{row['userlevel']}}" required> 
+                                 </div>
+                                 <div class="form-group">
+                                    <button class="btn btn-primary" type="submit">Update</button>
+                                 </div>
+                              </form>
+                           </div>
+                           <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  {% endfor  %}
+                  </tbody>
+               </table>
+               <div id="myModal" class="modal fade" role="dialog">
+                  <div class="modal-dialog">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <button type="button" class="close" data-dismiss="modal">&times;</button>
+                           <h4 class="modal-title">Add Employee</h4>
+                        </div>
+                        <div class="modal-body">
+                           <form action="{{url_for('register_employee')}}" method="POST">
+                              <div class="form-group">
+                                 <label>Name*:</label>
+                                 <input type="hidden"  name="emp_id">
+                                 <input type="text" class="form-control" name="name" required>
+                              </div>
+                              <div class="form-group">
+                                 <label>Username*:</label>
+                                 <input type="text" class="form-control" name="username" required> 
+                              </div>
+                              <!-- <div class="form-group">
+                                 <label>Password*:</label>
+                                 <input type="text" class="form-control" name="password" required> 
+                              </div> -->
+                              <div class="form-group">
+                                 <label for="userlevel">Userlevel*:</label>
+                                 <select name="userlevel" id="userlevel" class="form-control" required>
+                                    <option value="" disabled selected>Please select</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                 </select>
+                              </div>
+                              <div class="form-group">
+                                 <button class="btn btn-primary" type="submit">Add</button>
+                              </div>
+                           </form>
+                        </div>
+                        <div class="modal-footer">
+                           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+      <script type="text/javascript" src="{{url_for('static', filename = 'js/bootstrap.min.js')}}"></script>
+   </body>

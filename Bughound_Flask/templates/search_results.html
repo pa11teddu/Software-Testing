@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <link href="{{url_for('static', filename = 'css/bootstrap.min.css')}}" rel="stylesheet">
+    <style>
+        /* body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        } */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        header {
+            background-color: #3F72AF;
+            color: white;
+            padding: 10px 20px;
+            width: 97%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    .header-left, .header-right {
+        display: flex;
+        align-items: center;
+    }
+    .btn {
+        display: inline-block;
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        margin: 0 5px; /* Space between buttons */
+        text-align: center;
+    }
+
+    .btn-home {
+        background-color: #28a745; /* Green */
+        color: white;
+    }
+
+    .btn-home:hover {
+        background-color: #218838; /* Darker Green */
+    }
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-logout {
+        background-color: #dc3545; /* Red */
+        color: white;
+    }
+
+    .btn-logout:hover {
+        background-color: #c82333; /* Darker Red */
+    }
+    
+    h1 {
+    text-align: center;
+    color: #333; /* or use a gradient as shown below */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* a more refined font choice */
+    font-size: 36px; /* larger size for better visibility */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1); /* subtle shadow for depth */
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+}
+
+        table {
+            width: 90%;
+            margin: 20px 20px;
+            border-collapse: collapse;
+            table-layout: auto;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ccc;
+            word-wrap: break-word; /* Ensures text wraps within cell */
+    min-width: 120px;
+        }
+        th {
+            background-color: #3F72AF;
+            color: white;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        tr:nth-child(even) {
+            background-color: #eaece3;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .no-results {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 18px;
+        }
+        .no-bugs {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 20px;
+            color: #d9534f; /* More vibrant red */
+            font-weight: bold; /* Makes text bold */
+            background-color: #f9f9f9; /* Light background to make it stand out */
+            padding: 20px;
+            margin-right: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: pulse 1.5s infinite;
+        }
+        .btn-search, .btn-home {
+            background-color: #28a745; /* Green */
+            color: white;
+            margin-right: 10px; /* Ensures spacing between buttons */
+        }
+        .btn-search:hover, .btn-home:hover {
+            background-color: #218838; /* Darker Green */
+        }
+        .search-summary {
+    text-align: center;
+    margin-top: 20px;
+}
+.search-summary h2 {
+    color: #c63d4d; /* Green, to match your button colors */
+    font-size: 24px;
+}
+.btn {
+               display: inline-block;
+               text-decoration: none;
+               padding: 8px 15px;
+               border-radius: 5px;
+               transition: background-color 0.3s;
+               text-align: center;
+           }
+            .summary {
+    margin-top: 20px;
+    color: #333; /* Dark text color for readability */
+    font-size: 16px; /* Slightly larger font size */
+    font-weight: bold; /* Bold text for emphasis */
+    padding-left: 10px; /* Padding to give some space */
+    border-left: 5px solid #4CAF50; /* Green border on the left for emphasis */
+}
+
+.summary h2 {
+    margin: 0; /* Remove margin to keep the layout tight */
+    color: #4CAF50; /* Green color to match the border */
+}
+
+
+   
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Placeholder for the header content -->
+        <div class="header-left">
+            <div>Username: {{ user_name }}</div>
+            <div>&nbsp; &nbsp;&nbsp;&nbsp;Level: {{ access_level }}</div>
+        </div>
+        <div class="header-right">
+            <a href="{{ url_for('control_panel') }}" class="btn btn-home">Home</a>
+            <a href="{{ url_for('session_termination') }}" class="btn btn-logout">Logout</a>
+        </div>
+    </header>
+    <h1>Search Results</h1>
+    <div class="search-summary">
+        <h2>Total Bugs Found: {{ results_count }}</h2>
+        <div class="summary">
+            <h2>Bugs filtered by: {{ criteria_summary }}</h2>
+            <br>
+        </div>        
+        <a href="{{ url_for('search_bugs') }}" class="btn btn-search">Search Again</a>
+    </div>
+    
+    {% if results %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Program</th>
+                    <th>Report Type</th>
+                    <th>Severity</th>
+                    <th>Summary</th>
+                    <th>Problem</th>
+                    <th>Reproducible</th>
+                    <th>Reported By</th>
+                    <th>Reported Date</th>
+                    <th>Suggested Fix</th>
+                    <th>Area</th>
+                    <th>Assiged To</th>
+                    <th>Comments</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Resolution</th>
+                    <th>Resolution Version</th>
+                    <th>Resolution By</th>
+                    <th>Date Resolution</th>
+                    <th>Tested By</th>
+                    <th>Attachment</th>
+                    <th>Operations</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                <tr>
+                    <td>{{ result.program or '' }}</td>
+                    <td>{{ result.report_type or '' }}</td>
+                    <td>{{ result.severity or '' }}</td>
+                    <td>{{ result.problem_summary or '' }}</td>
+                    <td>{{ result.problem or '' }}</td>
+                    <td>{{ 'Yes' if result.reproducible == 1 else 'No' }}</td>
+                    <td>{{ result.reported_by or '' }}</td>
+                    <td>{{ result.date_reported or '' }}</td>
+                    <td>{{ result.suggested_fix or '' }}</td>
+                    <td>{{ result.functional_area or '' }}</td>
+                    <td>{{ result.assigned_to or '' }}</td>
+                    <td>{{ result.comments or '' }}</td>
+                    <td>{{ result.status or '' }}</td>
+                    <td>{{ result.priority or '' }}</td>
+                    <td>{{ result.resolution or '' }}</td>
+                    <td>{{ result.resolution_version or '' }}</td>
+                    <td>{{ result.resolution_by or '' }}</td>
+                    <td>{{ result.date_resolved or '' }}</td>
+                    <td>{{ result.tested_by or '' }}</td>
+                    <td>
+                        {% if result['filename'] %}
+                            <a href="{{ url_for('view_attachment', filename=result['filename']) }}">{{ result['filename'] }}</a>
+                        {% else %}
+                            No attachment
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        <a href="#modaledit{{result['bug_id']}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{result['bug_id']}}">Modify</a>
+                        <a href="/delete_bug/{{result['bug_id']}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure For Delete?')">Delete</a>
+                    </td>
+                </tr>
+                <div id="modaledit{{result['bug_id']}}" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                       <div class="modal-content">
+                          <div class="modal-header">
+                             <button type="button" class="close" data-dismiss="modal">&times;</button>
+                             <h4 class="modal-title">Update Program</h4>
+                          </div>
+                          <div class="modal-body">
+                             <form action="{{ url_for('edit_bug') }}" enctype="multipart/form-data" method="POST">
+                                <div class="form-group">
+                                   <input type="hidden"  name="bug_id" value="{{result['bug_id']}}">
+                                   <label for="program">Program:</label>
+                                   <select id="program" name="program" class ="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for program in programs %}
+                                      {% if program['program'] ==result['program'] %}
+                                      <option value="{{ program['program'] }}" selected>{{ program['program'] }}</option>
+                                      {% else %}
+                                      <option value="{{ program['program'] }}">{{ program['program'] }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="report_type">Report Type:</label>
+                                   <select id="report_type" name="report_type" class ="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for report_type in report_types %}
+                                      {% if report_type ==result['report_type'] %}
+                                      <option value="{{ report_type }}" selected>{{ report_type }}</option>
+                                      {% else %}
+                                      <option value="{{ report_type }}">{{ report_type }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="severity">Severity:</label>
+                                   <select name="severity" id="severity" class ="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for severity in severities %}
+                                      {% if severity ==result['severity'] %}
+                                      <option value="{{ severity }}" selected>{{ severity }}</option>
+                                      {% else %}
+                                      <option value="{{ severity }}">{{ severity }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="problem_summary">Problem Summary:</label>
+                                   <input type="text" name="problem_summary" id="problem_summary" value="{{result['problem_summary']}}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                   <label for="reproducible">Reproducible:</label>
+                                   <select name="reproducible" id="reproducible" class="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% if result['reproducible']=='Yes' %}
+                                      <option value="Yes" selected>Yes</option>
+                                      <option value="No" >No</option>
+                                      {% else %}
+                                      <option value="0" selected>No</option>
+                                      <option value="1" >Yes</option>
+                                      {% endif %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="problem">Problem:</label>
+                                   <input type="text" name="problem" id="problem" value="{{result['problem']}}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                   <label for="reported_by">Reported By:</label>
+                                   <select name="reported_by" id="reported_by" class="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for employee in employees %}
+                                      {% if  employee['name']==result['reported_by'] %}
+                                      <option value="{{ employee['name'] }}" selected>{{ employee['name'] }}</option>
+                                      {% else %}
+                                      <option value="{{ employee['name'] }}">{{ employee['name'] }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="date_reported">Date Reported:</label>
+                                   <input type="date" name="date_reported" id="date_reported" value="{{result['date_reported']}}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="suggested_fix">Suggested Fix:</label>
+                                    <input type="text" name="suggested_fix" id="suggested_fix" 
+                                           value="{{ result['suggested_fix'] if result['suggested_fix'] else '' }}" 
+                                           class="form-control">
+                                </div>
+                                
+
+
+                                <div class="form-group">
+                                   <label for="functional_area">Functional Area:</label>
+                                   <select name="functional_area" id="functional_area" class="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for area in areas %}
+                                      {% if  area['area']==result['functional_area'] %}
+                                      <option value="{{ area['area'] }}" selected>{{ area['area'] }}</option>
+                                      {% else %}
+                                      <option value="{{ area['area'] }}">{{ area['area'] }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="assigned_to">Assigned To:</label>
+                                   <select name="assigned_to" id="assigned_to" class="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for employee in employees %}
+                                      {% if  employee['name']==result['assigned_to'] %}
+                                      <option value="{{ employee['name'] }}" selected>{{ employee['name'] }}</option>
+                                      {% else %}
+                                      <option value="{{ employee['name'] }}">{{ employee['name'] }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="comments">Comments:</label>
+                                   <input type="text" name="comments" id="comments" value="{{result['comments']}}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                   <label for="status">Status:</label>
+                                   <select id="status" name="status" class="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for s in status %}
+                                      {% if s==result['status'] %}
+                                      <option value="{{ s }}" selected>{{ s }}</option>
+                                      {% else %}
+                                      <option value="{{ s }}">{{ s }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="priority">Priority:</label>
+                                   <select id="priority" name="priority" class="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for p in priority %}
+                                      {% if p==result['priority'] %}
+                                      <option value="{{ p }}" selected>{{ p }}</option>
+                                      {% else %} 
+                                      <option value="{{ p }}">{{ p }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="resolution">Resolution:</label>
+                                   <select id="resolution" name="resolution" class="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for r in resolution %}
+                                      {% if r==result['resolution'] %}
+                                      <option value="{{ r }}" selected>{{ r }}</option>
+                                      {% else %}
+                                      <option value="{{ r }}">{{ r }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="resolution_version">Resolution  Version:</label>
+                                   <select id="resolution_version" name="resolution_version" class="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for r in resolution_version %}
+                                      {% if r==result['resolution_version'] %}
+                                      <option value="{{ r }}" selected>{{ r }}</option>
+                                      {% else %}
+                                      <option value="{{ r }}">{{ r }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="resolution_by">Resolution  by:</label>
+                                   <select id="resolution_by" name="resolution_by" class="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for employee in employees %}
+                                      {% if  employee['name']==result['resolution_by'] %}
+                                      <option value="{{ employee['name'] }}" selected>{{ employee['name'] }}</option>
+                                      {% else %}
+                                      <option value="{{ employee['name'] }}">{{ employee['name'] }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="form-group">
+                                   <label for="date_resolved">Date Resolved:</label>
+                                   <input type="date" name="date_resolved" id="date_resolved" value="{{result['date_resolved']}}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                   <label for="tested_by">Tested by:</label>
+                                   <select id="tested_by" name="tested_by" class="form-control">
+                                      <option value="" disabled selected>Please select</option>
+                                      {% for employee in employees %}
+                                      {% if  employee['name']==result['tested_by'] %}
+                                      <option value="{{ employee['name'] }}" selected>{{ employee['name'] }}</option>
+                                      {% else %}
+                                      <option value="{{ employee['name'] }}">{{ employee['name'] }}</option>
+                                      {% endif %}
+                                      {% endfor %}
+                                   </select>
+                                </div>
+                                <div class="col-sm-12">
+                                    <label for="attachment">Update Attachment:</label><br>
+                                    {% if result['filename'] %}
+                                        <a href="{{ url_for('view_attachment', filename=result['filename']) }}">{{ result['filename'] }}</a>
+                                    {% else %}
+                                        <em>No file attached</em>
+                                    {% endif %}
+                                    <input type="file" id="attachment" name="attachment" class="form-control"><br><br>
+                                </div>
+                                
+                                <div class="form-group">
+                                   <button class="btn btn-primary" type="submit">Update</button>
+                                </div>
+                             </form>
+                          </div>
+                          <div class="modal-footer">
+                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                       </div>
+                    </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+    <p class="no-bugs">No bugs found</p>
+    {% endif %}
+    <script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+      <script type="text/javascript" src="{{url_for('static', filename = 'js/bootstrap.min.js')}}"></script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="rectangle-container">
+    <!-- "Welcome to Bug Hound" heading -->
+    <div class="welcome-heading-container">
+      <h2 class="text-center welcome-heading">&nbsp&nbsp Welcome to Bug Hound</h2>
+    </div>
+
+    <!-- Flash messages are displayed here -->
+    {% with alerts = get_flashed_messages() %}
+      {% if alerts %}
+        {% for alert in alerts %}
+        <div class="alert alert-danger alert-dismissable fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            {{ alert }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <br>
+
+    <div class="well">
+      <form action="/" method="POST">
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" class="form-control" required />
+      </div>
+      <div class="form-group">
+          <label for="userlevel">Userlevel:</label>
+          <select id="userlevel" name="userlevel" class="form-control" required>
+              <option value="" disabled selected>Select user level</option>
+              <option value="1">Level 1</option>
+              <option value="2">Level 2</option>
+              <option value="3">Level 3</option>
+          </select>
+      </div>
+      
+        <div class="g-recaptcha" data-sitekey="6Ldy0wQpAAAAABdkHJNeHrHMW0UppKJm_MD_YWOP"></div>
+        <button type="submit" class="btn btn-default">Login</button>
+        <!-- <button type="button" onclick="location.href='/user_signup';" class="btn btn-primary">Sign Up</button> -->
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<style>
+  .alert-custom {
+    background-color: #3b7d64; /* Custom background color */
+    color: #ffffff; /* Custom text color */
+    border-color: #b8daff; /* Custom border color */
+    /* Add more styling as needed */
+}
+
+
+.form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-control {
+    width: 100%; /* Full width */
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  }
+
+  body, html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #DBE2EF; /* Optional: background color for the whole page */
+  }
+
+  .rectangle-container {
+      border: 1.5px solid #112D4E;
+      padding: 20px;
+      background-color: #DBE2EF;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .well {
+      margin-bottom: 0; /* Remove any default margin-bottom if it exists */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .g-recaptcha {
+      margin-bottom: 20px; /* Spacing below the reCAPTCHA */
+  }
+
+  .btn {
+    display: block; /* Make the element a block to fill the container */
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding for consistency */
+    margin-top: 10px; /* Spacing between elements */
+    text-align: center; /* Center the text inside the button */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Change mouse cursor to indicate a clickable item */
+    text-decoration: none; /* Remove underline from anchor elements */
+    color: #f3f6f9; /* Text color for buttons */
+  }
+  
+  .btn-default {
+    background-color: #3F72AF;
+    border-color: #faf8fa;
+  }
+  
+  .btn-primary {
+    background-color: #112D4E;
+    border-color: #faf8fa;
+  }
+</style>
+<script
+  type="text/javascript"
+  src="{{url_for('static', filename='js/jquery-3.2.1.min.js') }}"
+></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script
+  type="text/javascript"
+  src="{{url_for('static', filename = 'js/bootstrap.min.js')}}"
+></script>
+
+
+{% endblock %}

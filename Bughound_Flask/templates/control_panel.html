@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Bug Hound</title>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <style>
+        /* Main content area where the dashboard-container will be centered */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: calc(100vh - 60px); /* Adjust height taking the header into account */
+            padding-top: 20px; /* Spacing for the top of the main content */
+        }
+
+        /* The main container for dashboard elements */
+        .dashboard-container {
+            border: 1.5px solid #112D4E;
+            padding: 20px;
+            background-color: #FFF;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .dashboard-section {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #3F72AF;
+            border: 1px solid #2e538e;
+            border-radius: 5px;
+            color: #FFF;
+        }
+
+      
+
+        .dashboard-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .dashboard-section a {
+            text-decoration: none;
+            color: #e0e4e9;
+            display: block;
+            padding: 10px;
+        }
+
+        .dashboard-heading {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #112D4E;
+        }
+
+    </style>
+</head>
+<body>
+  <header>
+    <!-- Placeholder for the header content -->
+    <div class="header-left">
+        <div>Username: {{ user_name }}</div>
+        <div>&nbsp; &nbsp;&nbsp;&nbsp;Level: {{ access_level }}</div>
+    </div>
+    <div class="header-right">
+        <a href="{{ url_for('control_panel') }}" class="btn btn-home">Home</a>
+        <a href="{{ url_for('session_termination') }}" class="btn btn-logout">Logout</a>
+    </div>
+</header>
+
+
+    <div class="main-content">
+        <div class="dashboard-container">
+            <h2 class="dashboard-heading">Bug Tracker Dashboard</h2>
+
+            {% if condition >= 1 %}
+            <div class="dashboard-section">
+                <a href="{{ url_for('assigned_bugs') }}">Assigned Bugs</a>
+            </div>
+            <div class="dashboard-section">
+                <a href="{{ url_for('add_bug') }}">New Bug Entry</a>
+            </div>
+            {% endif %}
+            {% if condition >= 2 %}
+            <div class="dashboard-section">
+                <a href="{{ url_for('update_bug') }}">Update or Delete Bugs</a>
+            </div>
+            {% endif %}
+            {% if condition == 3 %}
+            <div class="dashboard-section">
+                <a href="{{ url_for('search_bugs') }}">Bug Search</a>
+            </div>
+            <div class="dashboard-section">
+                <a href="{{ url_for('employee_controller') }}">Employee Management</a>
+            </div>
+            <div class="dashboard-section">
+                <a href="{{ url_for('manage_program') }}">Program Management</a>
+            </div>
+            <div class="dashboard-section">
+                <a href="{{ url_for('area_controller') }}">Area Management</a>
+            </div>
+            <div class="dashboard-section">
+                <a href="{{ url_for('export_bugs_to_xml') }}">Export to XML</a>
+            </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</body>
+</html>

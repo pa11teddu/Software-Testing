@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+    <title>Assigned Bugs</title>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <style>
+        header {
+            background-color: #3F72AF;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            text-align: center;
+            margin-left: 10px; /* Adds space between buttons */
+        }
+
+        .btn-home {
+            background-color: #28a745; /* Green */
+            color: white;
+        }
+
+        .btn-logout {
+            background-color: #dc3545; /* Red */
+            color: white;
+        }
+
+        .container {
+            width: 100%;
+            padding: 0 15px;
+            margin: 20px auto;
+        }
+
+        .well {
+            text-align: center;
+            background-color: #7f7247;
+            color: white;
+            padding: 20px 20px;
+            margin-top: 20px;
+            margin-left: 100px;
+            margin-right: 100px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        table {
+    width: calc(100% - 45px); /* Reduce the width to accommodate margins */
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-right: 50px; /* Adds right margin to the table */
+    margin-left: 20px; /* Adds left margin to balance it visually */
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #3F72AF;
+}
+
+th {
+    background-color: #3F72AF;
+    color: white;
+}
+
+        tr:hover {background-color:  #a13535;}
+
+        tr:nth-child(even) {background-color: #dcf4d0;}
+
+        .no-bugs {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 20px;
+            color: #d9534f; /* More vibrant red */
+            font-weight: bold; /* Makes text bold */
+            background-color: #f9f9f9; /* Light background to make it stand out */
+            padding: 20px;
+            margin-right: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: pulse 1.5s infinite;
+        }
+
+    </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+        <div>Username: {{ user_name }}</div>
+        <div>&nbsp; &nbsp;&nbsp;&nbsp;Level: {{ access_level }}</div>
+    </div>
+    <div class="header-right">
+        <a href="{{ url_for('control_panel') }}" class="btn btn-home">Home</a>
+        <a href="{{ url_for('session_termination') }}" class="btn btn-logout">Logout</a>
+    </div>
+  </header>
+  <div class="container">
+    <div class="well">
+       <h1>Bugs Assigned to You</h1>
+    </div>
+  </div>
+  <div class="container">
+    {% if bugs %}
+        <table>
+            <tr>
+                <th>Program</th>
+                <th>Area</th>
+                <th>Severity</th>
+                <th>Date Reported (Y/M/D)</th>
+                <th>Reporty Type</th>
+                <th>Summary</th>
+            </tr>
+            {% for bug in bugs %}
+            <tr>
+                <td>{{ bug.program }}</td>
+                <td>{{ bug.functional_area }}</td>
+                <td>{{ bug.severity }}</td>
+                <td>{{ bug.date_reported }}</td>
+                <td>{{ bug.report_type}}</td>
+                <td>{{ bug.problem_summary }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p class="no-bugs">No bugs assigned to you.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

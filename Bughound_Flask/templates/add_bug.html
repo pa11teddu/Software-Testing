@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>New Bug Entry</title>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+      <style>
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .well {
+            background-color: #7f7247;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        label, select, input, textarea {
+            display: block;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        select, input[type=text], input[type=date], textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type=submit], input[type=reset], button {
+            cursor: pointer;
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        input[type=submit] {
+            background-color: #4CAF50;
+        }
+
+        input[type=reset] {
+            background-color: #f44336;
+        }
+
+        button {
+            background-color: #555;
+        }
+        .flex-row {
+    display: flex;
+    justify-content: space-between; /* Adjusts the space between fields */
+}
+
+.flex-col {
+    flex: 1;
+    padding: 0 10px; /* Adds padding between fields */
+}
+
+.flex-col:first-child,
+.flex-col:last-child {
+    padding-left: 0;
+    padding-right: 0;
+}
+.flex-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px; /* Adds space between rows */
+}
+
+.flex-col {
+    flex: 1;
+    padding: 0 10px; /* Adds padding between columns */
+}
+
+.flex-col.full-width {
+    padding: 0;
+    width: 99%;
+}
+.flex-large {
+    flex: 3;  /* Takes up more space */
+    padding: 0 10px;
+}
+
+.flex-small {
+    flex: 1; 
+    padding-left: 20px;
+}
+
+   </style>
+   </head>
+   <body>
+      <header>
+         <div class="header-left">
+            <div>Username: {{ username }}</div>
+            <div>&nbsp; &nbsp;&nbsp;&nbsp;Level: {{ userlevel }}</div>
+         </div>
+         <div class="header-right">
+            <a href="{{ url_for('control_panel') }}" class="btn btn-home">Home</a>
+            <a href="{{ url_for('session_termination') }}" class="btn btn-logout">Logout</a>
+         </div>
+      </header>
+      <div class="container">
+         <div class="well">
+            <h1>New Bug Entry</h1>
+         </div>
+         {% with alerts = get_flashed_messages() %}
+         {% if alerts %}
+         {% for alert in alerts %}
+         <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            {{ alert }}
+         </div>
+         {% endfor %}
+         {% endif %}
+         {% endwith %}
+         <form action="{{ url_for('add_bug') }}" enctype="multipart/form-data" method="POST">
+            <div class="flex-row">
+               <div class="form-group flex-col">
+                   <label for="program">PROGRAM*:</label>
+                   <select id="program" name="program" class="form-control" required>
+                       <option value="" disabled selected>Select</option>
+                       {% for program in programs %}
+                       <option value="{{ program['program'] }}">{{ program['program']}}</option>
+                       {% endfor %}
+                   </select>
+               </div>
+               <div class="form-group flex-col">
+                   <label for="report_type">REPORT TYPE*:</label>
+                   <select id="report_type" name="report_type" class="form-control" required>
+                       <option value="" disabled selected>Select</option>
+                       {% for report_type in report_types %}
+                       <option value="{{ report_type }}">{{ report_type }}</option>
+                       {% endfor %}
+                   </select>
+               </div>
+               <div class="form-group flex-col">
+                   <label for="severity">SEVERITY*:</label>
+                   <select id="severity" name="severity" class="form-control" required>
+                       <option value="" disabled selected>Select</option>
+                       {% for severity in severities %}
+                       <option value="{{ severity }}">{{ severity }}</option>
+                       {% endfor %}
+                   </select>
+               </div>
+           </div>
+           
+           <div class="flex-row">
+            <div class="flex-large">
+               <label for="problem_summary">PROBLEM SUMMARY*:</label>
+               <input type="text" id="problem_summary" name="problem_summary" class="form-control" required>
+            </div>
+            <div class="flex-small">
+               <label for="reproducible">REPRODUCIBLE*:</label>
+               <select id="reproducible" name="reproducible" class="form-control" required>
+                  <option value="" disabled selected>Select</option>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+               </select>
+            </div>
+         </div>
+
+         <div class="flex-col full-width">
+               <label for="problem">PROBLEM*:</label>
+               <textarea id="problem" name="problem" class="form-control" required></textarea>
+            </div>
+            <br>
+            <div class="form-group short-label">
+               <label for="reported_by">REPORTED BY*:</label>
+               <select id="reported_by" name="reported_by" class="form-control" required>
+                  <option value="" disabled selected>Select</option>
+                  {% for employee in employees %}
+                  <option value="{{ employee['name'] }}">{{ employee['name'] }}</option>
+                  {% endfor %}
+               </select>
+               &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+               <label for="date_reported">DATE REPORTED*:</label>
+               <input type="date" id="date_reported" name="date_reported" class="form-control" required>
+            </div>
+
+            <hr>
+            <div class="form-col full-width">
+               <label for="suggested_fix">SUGGESTED FIX:</label>
+               <textarea type="text" class="form-control" id="suggested_fix" name="suggested_fix"></textarea>
+           </div>
+           
+            <div class="form-group short-label">
+               <label for="functional_area">FUNCTIONAL AREA:</label>
+               <select id="functional_area" name="functional_area" class="form-control">
+                  <option value="" disabled selected>Select</option>
+                  {% for area in areas %}
+                  <option value="{{ area['area'] }}">{{ area['area'] }}</option>
+                  {% endfor %}
+               </select>
+               &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+               <label for="assigned_to">ASSIGNED TO:</label>
+               <select id="assigned_to" name="assigned_to" class="form-control">
+                  <option value="" disabled selected>Select</option>
+                  {% for employee in employees %}
+                  <option value="{{ employee['name'] }}">{{ employee['name'] }}</option>
+                  {% endfor %}
+               </select>
+            </div>
+
+             <div class="flex-col full-width">
+               <label for="comments">COMMENTS:</label>
+               <textarea id="comments" name="comments" class="form-control"></textarea>
+            </div>
+            <br>
+            <div class="form-group short-label">
+               <div class="form-group flex-col">
+               <label for="status">STATUS:</label>
+               <select id="status" name="status" class="form-control">
+                  <option value="" disabled selected>Select</option>
+                  {% for s in status %}
+                  <option value="{{ s }}">{{ s }}</option>
+                  {% endfor %}
+               </select>
+            </div>
+            <div class="form-group flex-col">
+               <label for="priority">PRIORITY:</label>
+               <select id="priority" name="priority" class="form-control">
+                  <option value="" disabled selected>Select</option>
+                  {% for p in priority %}
+                  <option value="{{ p }}">{{ p }}</option>
+                  {% endfor %}
+               </select>
+            </div>
+            <div class="form-group flex-col">
+               <label for="resolution">RESOLUTION:</label>
+               <select id="resolution" name="resolution" class="form-control">
+                  <option value="" disabled selected>Select</option>
+                  {% for r in resolution %}
+                  <option value="{{ r }}">{{ r }}</option>
+                  {% endfor %}
+               </select>
+            </div>
+            <div class="form-group flex-col">
+               <label for="resolution_version">RESOLUTION VERSION:</label>
+               <select id="resolution_version" name="resolution_version" class="form-control">
+                  <option value="" disabled selected>Select</option>
+                  {% for r in resolution_version %}
+                  <option value="{{ r }}">{{ r }}</option>
+                  {% endfor %}
+               </select>
+               </div>
+            </div>
+
+            <div class="form-group short-label">
+               <div class="form-group flex-col">
+               <label for="resolution_by">RESOLUTION BY:</label>
+               <select id="resolution_by" name="resolution_by" class="form-control">
+                  <option value="" disabled selected>Select</option>
+                  {% for employee in employees %}
+                  <option value="{{ employee['name'] }}">{{ employee['name'] }}</option>
+                  {% endfor %}
+               </select>
+               </div>
+               <div class="form-group flex-col">
+               <label for="date_resolved">DATE RESOLVED:</label>
+               <input type="date" id="date_resolved" name="date_resolved" class="form-control">
+               </div>
+               <div class="form-group flex-col">
+               <label for="tested_by">TESTED BY:</label>
+               <select id="tested_by" name="tested_by" class="form-control">
+                  <option value="" disabled selected>Select</option>
+                  {% for employee in employees %}
+                  <option value="{{ employee['name'] }}">{{ employee['name'] }}</option>
+                  {% endfor %}
+               </select>
+               </div>
+               <div class="form-group flex-col">
+               <label for="attachment">ATTACHMENT:</label><br>
+               <input type="file" id="attachment" name="attachment" class="form-control"><br><br>
+            </div>
+            </div>
+            <div class="form-group short-label">
+               <input type="submit" value="Submit" class="btn-primary flex-small">
+               <input type="reset" value="Reset" class="btn-secondary flex-small">
+               <button type="button" onclick="window.location.href='/control_panel';" class="btn-danger flex-small">Cancel</button>
+            </div>
+         </form>
+      </div>
+   </body>
+</html>
